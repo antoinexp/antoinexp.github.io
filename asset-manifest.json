@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/static/css/main.8c8b27cf.chunk.css",
-    "main.js": "/static/js/main.1ebc3c8a.chunk.js",
-    "main.js.map": "/static/js/main.1ebc3c8a.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.e03f55d7.js",
-    "runtime-main.js.map": "/static/js/runtime-main.e03f55d7.js.map",
-    "static/js/2.f674ae61.chunk.js": "/static/js/2.f674ae61.chunk.js",
-    "static/js/2.f674ae61.chunk.js.map": "/static/js/2.f674ae61.chunk.js.map",
-    "static/js/3.e03073b3.chunk.js": "/static/js/3.e03073b3.chunk.js",
-    "static/js/3.e03073b3.chunk.js.map": "/static/js/3.e03073b3.chunk.js.map",
+    "main.js": "/static/js/main.28dba7cf.chunk.js",
+    "main.js.map": "/static/js/main.28dba7cf.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.f712c8e8.js",
+    "runtime-main.js.map": "/static/js/runtime-main.f712c8e8.js.map",
+    "static/js/2.c7ac575b.chunk.js": "/static/js/2.c7ac575b.chunk.js",
+    "static/js/2.c7ac575b.chunk.js.map": "/static/js/2.c7ac575b.chunk.js.map",
+    "static/js/3.1ba0a0f8.chunk.js": "/static/js/3.1ba0a0f8.chunk.js",
+    "static/js/3.1ba0a0f8.chunk.js.map": "/static/js/3.1ba0a0f8.chunk.js.map",
     "index.html": "/index.html",
     "static/css/main.8c8b27cf.chunk.css.map": "/static/css/main.8c8b27cf.chunk.css.map",
-    "static/js/2.f674ae61.chunk.js.LICENSE.txt": "/static/js/2.f674ae61.chunk.js.LICENSE.txt",
-    "static/js/GameWorker.7e7c5c58.worker.js": "/static/js/GameWorker.7e7c5c58.worker.js",
-    "static/js/GameWorker.7e7c5c58.worker.js.LICENSE.txt": "/static/js/GameWorker.7e7c5c58.worker.js.LICENSE.txt",
-    "static/js/GameWorker.7e7c5c58.worker.js.map": "/static/js/GameWorker.7e7c5c58.worker.js.map"
+    "static/js/2.c7ac575b.chunk.js.LICENSE.txt": "/static/js/2.c7ac575b.chunk.js.LICENSE.txt",
+    "static/js/GameWorker.370545f5.worker.js": "/static/js/GameWorker.370545f5.worker.js",
+    "static/js/GameWorker.370545f5.worker.js.LICENSE.txt": "/static/js/GameWorker.370545f5.worker.js.LICENSE.txt",
+    "static/js/GameWorker.370545f5.worker.js.map": "/static/js/GameWorker.370545f5.worker.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.e03f55d7.js",
-    "static/js/2.f674ae61.chunk.js",
+    "static/js/runtime-main.f712c8e8.js",
+    "static/js/2.c7ac575b.chunk.js",
     "static/css/main.8c8b27cf.chunk.css",
-    "static/js/main.1ebc3c8a.chunk.js"
+    "static/js/main.28dba7cf.chunk.js"
   ]
 }
