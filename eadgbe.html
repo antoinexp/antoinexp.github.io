@@ -197,7 +197,7 @@
         <div class="w-full flex flex-col items-center space-y-0.5">
             <canvas id="spectrogram" width="600" height="90" class="w-full h-16 bg-slate-900/95 rounded-2xl border border-slate-700/80 shadow-inner"></canvas>
             <!-- Frequency Ticks / Labels -->
-            <div class="w-full flex justify-between text-[10px] font-mono text-slate-400 px-1">
+            <div id="spectrogramLabels" class="w-full flex justify-between text-[10px] font-mono text-slate-400 px-1">
                 <span>0 Hz</span>
                 <span>500</span>
                 <span>1 kHz</span>
@@ -287,6 +287,7 @@
                 document.getElementById('btnEn').className = 'px-4 py-1.5 rounded-full text-slate-400 hover:text-white transition';
             }
             updateInstrumentButtonLabels();
+            updateSpectrogramLabels();
         }
 
         function setBufferSize(size) {
@@ -369,6 +370,7 @@
                 modeBass.className = 'flex-1 py-2 rounded-lg bg-indigo-600 font-bold text-white transition';
                 bassPanel.classList.remove('hidden');
             }
+            updateSpectrogramLabels();
             resetDisplay();
         }
 
@@ -386,6 +388,7 @@
                 }
             }
             updateSelectedStringInfo();
+            updateSpectrogramLabels();
         }
 
         function updateSelectedStringInfo() {
@@ -405,6 +408,43 @@
             if (!target) return;
             const displayName = notationSystem === 'eu' ? target.euName : target.name;
             document.getElementById(infoId).textContent = `Target: String ${displayName}${target.octave} (${target.freq} Hz)`;
+        }
+
+        function getSelectedTarget() {
+            if (tunerMode === 'guitar' && selectedStringIndex !== null) return guitarStrings[selectedStringIndex];
+            if (tunerMode === 'ukulele' && selectedStringIndex !== null) return ukuleleStrings[selectedStringIndex];
+            if (tunerMode === 'bass' && selectedStringIndex !== null) return bassStrings[selectedStringIndex];
+            return null;
+        }
+
+        function updateSpectrogramLabels() {
+            const container = document.getElementById('spectrogramLabels');
+            const target = getSelectedTarget();
+
+            if (!target) {
+                container.innerHTML = `
+                    <span>0 Hz</span>
+                    <span>500</span>
+                    <span>1 kHz</span>
+                    <span>1.5k</span>
+                    <span>2 kHz</span>
+                    <span>2.5k</span>
+                    <span>3 kHz</span>
+                `;
+            } else {
+                const targetFreq = target.freq;
+                const span = Math.max(30, targetFreq * 0.35);
+                const minF = Math.max(0, Math.round(targetFreq - span));
+                const maxF = Math.round(targetFreq + span);
+                const midF = Math.round(targetFreq);
+                const displayName = notationSystem === 'eu' ? target.euName : target.name;
+
+                container.innerHTML = `
+                    <span>${minF} Hz</span>
+                    <span class="text-indigo-400 font-bold">${displayName}: ${midF} Hz</span>
+                    <span>${maxF} Hz</span>
+                `;
+            }
         }
 
         async function toggleTuner() {
@@ -487,42 +527,80 @@
             analyser.getFloatTimeDomainData(buf);
             const ac = autoCorrelate(buf, audioContext.sampleRate);
 
-            // Render Spectrogram / Frequency Spectrum up to 3 kHz with grid lines every 500 Hz
             analyser.getByteFrequencyData(freqData);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             const sampleRate = audioContext.sampleRate;
-            const maxFreq = 3000; // 3 kHz max
-            const maxBin = Math.min(analyser.frequencyBinCount, Math.floor((maxFreq * fftSize) / sampleRate));
-            const barWidth = canvas.width / maxBin;
-            
-            // Draw frequency bars
-            for (let i = 0; i < maxBin; i++) {
-                const barHeight = (freqData[i] / 255) * canvas.height;
+            const target = getSelectedTarget();
+
+            if (!target) {
+                // Full Chromatic Spectrogram (0 Hz to 3 kHz)
+                const maxFreq = 3000;
+                const maxBin = Math.min(analyser.frequencyBinCount, Math.floor((maxFreq * fftSize) / sampleRate));
+                const barWidth = canvas.width / maxBin;
                 
-                const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
-                gradient.addColorStop(0, '#6366f1');
-                gradient.addColorStop(1, '#22d3ee');
+                for (let i = 0; i < maxBin; i++) {
+                    const barHeight = (freqData[i] / 255) * canvas.height;
+                    const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
+                    gradient.addColorStop(0, '#6366f1');
+                    gradient.addColorStop(1, '#22d3ee');
 
-                ctx.fillStyle = gradient;
-                ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 0.5, barHeight);
-            }
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 0.5, barHeight);
+                }
 
-            // Draw vertical grid lines every 500 Hz up to 3 kHz
-            [500, 1000, 1500, 2000, 2500, 3000].forEach(freq => {
-                const bin = Math.floor((freq * fftSize) / sampleRate);
-                const x = (bin / maxBin) * canvas.width;
-                if (x <= canvas.width) {
-                    ctx.strokeStyle = freq % 1000 === 0 ? 'rgba(100, 116, 139, 0.5)' : 'rgba(100, 116, 139, 0.25)';
-                    ctx.lineWidth = freq % 1000 === 0 ? 1 : 0.75;
-                    ctx.setLineDash([3, 3]);
+                // Grid lines every 500 Hz
+                [500, 1000, 1500, 2000, 2500, 3000].forEach(freq => {
+                    const bin = Math.floor((freq * fftSize) / sampleRate);
+                    const x = (bin / maxBin) * canvas.width;
+                    if (x <= canvas.width) {
+                        ctx.strokeStyle = freq % 1000 === 0 ? 'rgba(100, 116, 139, 0.5)' : 'rgba(100, 116, 139, 0.25)';
+                        ctx.lineWidth = freq % 1000 === 0 ? 1 : 0.75;
+                        ctx.setLineDash([3, 3]);
+                        ctx.beginPath();
+                        ctx.moveTo(x, 0);
+                        ctx.lineTo(x, canvas.height);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                });
+            } else {
+                // Zoomed-in Spectrogram around selected string target frequency
+                const targetFreq = target.freq;
+                const span = Math.max(30, targetFreq * 0.35);
+                const minFreq = Math.max(0, targetFreq - span);
+                const maxFreq = targetFreq + span;
+
+                const minBin = Math.floor((minFreq * fftSize) / sampleRate);
+                const maxBin = Math.min(analyser.frequencyBinCount, Math.floor((maxFreq * fftSize) / sampleRate));
+                const numBins = Math.max(1, maxBin - minBin);
+                const barWidth = canvas.width / numBins;
+
+                for (let i = 0; i < numBins; i++) {
+                    const binIdx = minBin + i;
+                    const barHeight = (freqData[binIdx] / 255) * canvas.height;
+                    const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
+                    gradient.addColorStop(0, '#6366f1');
+                    gradient.addColorStop(1, '#38bdf8');
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 0.5, barHeight);
+                }
+
+                // Draw vertical indicator line at exact target frequency
+                const targetBin = Math.floor((targetFreq * fftSize) / sampleRate);
+                if (targetBin >= minBin && targetBin <= maxBin) {
+                    const targetX = ((targetBin - minBin) / numBins) * canvas.width;
+                    ctx.strokeStyle = 'rgba(52, 211, 153, 0.8)'; // Emerald highlight for target
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([2, 2]);
                     ctx.beginPath();
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, canvas.height);
+                    ctx.moveTo(targetX, 0);
+                    ctx.lineTo(targetX, canvas.height);
                     ctx.stroke();
                     ctx.setLineDash([]);
                 }
-            });
+            }
 
             if (ac === -1 || (tunerMode !== 'chromatic' && selectedStringIndex === null)) {
                 if (tunerMode !== 'chromatic' && selectedStringIndex === null && isRunning) {
@@ -653,7 +731,7 @@
                 document.getElementById('status').className = 'text-xs font-bold text-emerald-400 h-5 flex items-center';
             } else if (centsVal < 0) {
                 needle.className = 'absolute w-1 h-6 bg-cyan-400 rounded-full needle shadow-[0_0_10px_rgba(34,211,238,0.8)]';
-                document.getElementById('status').textContent = 'Flat (Too low) ️⬇️';
+                document.getElementById('status').textContent = 'Flat (Too low) ⬇️';
                 document.getElementById('status').className = 'text-xs font-medium text-cyan-400 h-5 flex items-center';
             } else {
                 needle.className = 'absolute w-1 h-6 bg-amber-400 rounded-full needle shadow-[0_0_10px_rgba(251,191,36,0.8)]';
