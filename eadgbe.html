@@ -4,31 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>EADGBE Tuner</title>
-    <!-- PWA Meta Tags for Mobile -->
+    <!-- iOS PWA Meta Tags for Dark Status Bar & Standalone Mode -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="theme-color" content="#0f172a">
     <link rel="manifest" href="manifest.json">
     <!-- Tailwind CSS for clean styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: env(safe-area-inset-top, 1rem) 1rem env(safe-area-inset-bottom, 1rem) 1rem;
         }
         .needle {
             transition: transform 0.1s ease-out;
         }
     </style>
 </head>
-<body class="text-white min-h-screen flex flex-col items-center justify-center p-4">
+<body class="text-white">
 
     <!-- Main Tuner Card -->
-    <main class="w-full max-w-md bg-slate-800/80 backdrop-blur-md border border-slate-700/60 rounded-3xl p-5 shadow-2xl flex flex-col items-center space-y-4">
+    <main class="w-full max-w-md bg-slate-800/80 backdrop-blur-md border border-slate-700/60 rounded-3xl p-4 shadow-2xl flex flex-col items-center space-y-3 max-h-[96dvh] overflow-y-auto">
 
         <!-- Start / Stop Button -->
         <div id="controls" class="w-full flex justify-center">
-            <button id="toggleButton" onclick="toggleTuner()" class="w-full py-3.5 rounded-2xl font-bold text-lg bg-indigo-600 hover:bg-indigo-500 active:scale-95 transition shadow-lg shadow-indigo-600/30">
+            <button id="toggleButton" onclick="toggleTuner()" class="w-full py-3 rounded-2xl font-bold text-lg bg-indigo-600 hover:bg-indigo-500 active:scale-95 transition shadow-lg shadow-indigo-600/30">
                 Start Tuner
             </button>
         </div>
@@ -51,30 +62,30 @@
             </div>
 
             <!-- Guitar Strings Panel -->
-            <div id="guitarPanel" class="w-full bg-slate-900/90 rounded-2xl p-3 border border-slate-700/80 hidden flex flex-col space-y-2">
-                <div class="text-xs font-mono text-slate-400 text-center">Select guitar string to tune:</div>
+            <div id="guitarPanel" class="w-full bg-slate-900/90 rounded-2xl p-2.5 border border-slate-700/80 hidden flex flex-col space-y-1.5">
+                <div class="text-[11px] font-mono text-slate-400 text-center">Select guitar string to tune:</div>
                 <div class="grid grid-cols-6 gap-1.5">
-                    <button onclick="selectString(0)" id="stringBtn0" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
+                    <button onclick="selectString(0)" id="stringBtn0" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-1.5 transition">
                         <span class="text-xs font-bold text-indigo-300">E₂</span>
                         <span class="text-[9px] text-slate-400">82 Hz</span>
                     </button>
-                    <button onclick="selectString(1)" id="stringBtn1" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
+                    <button onclick="selectString(1)" id="stringBtn1" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-1.5 transition">
                         <span class="text-xs font-bold text-indigo-300">A₂</span>
                         <span class="text-[9px] text-slate-400">110 Hz</span>
                     </button>
-                    <button onclick="selectString(2)" id="stringBtn2" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
+                    <button onclick="selectString(2)" id="stringBtn2" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-1.5 transition">
                         <span class="text-xs font-bold text-indigo-300">D₃</span>
                         <span class="text-[9px] text-slate-400">147 Hz</span>
                     </button>
-                    <button onclick="selectString(3)" id="stringBtn3" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
+                    <button onclick="selectString(3)" id="stringBtn3" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-1.5 transition">
                         <span class="text-xs font-bold text-indigo-300">G₃</span>
                         <span class="text-[9px] text-slate-400">196 Hz</span>
                     </button>
-                    <button onclick="selectString(4)" id="stringBtn4" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
+                    <button onclick="selectString(4)" id="stringBtn4" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-1.5 transition">
                         <span class="text-xs font-bold text-indigo-300">B₃</span>
                         <span class="text-[9px] text-slate-400">247 Hz</span>
                     </button>
-                    <button onclick="selectString(5)" id="stringBtn5" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
+                    <button onclick="selectString(5)" id="stringBtn5" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-1.5 transition">
                         <span class="text-xs font-bold text-indigo-300">e₄</span>
                         <span class="text-[9px] text-slate-400">329 Hz</span>
                     </button>
@@ -83,22 +94,22 @@
             </div>
 
             <!-- Ukulele Strings Panel -->
-            <div id="ukulelePanel" class="w-full bg-slate-900/90 rounded-2xl p-3 border border-slate-700/80 hidden flex flex-col space-y-2">
-                <div class="text-xs font-mono text-slate-400 text-center">Select ukulele string to tune (G4-C4-E4-A4):</div>
+            <div id="ukulelePanel" class="w-full bg-slate-900/90 rounded-2xl p-2.5 border border-slate-700/80 hidden flex flex-col space-y-1.5">
+                <div class="text-[11px] font-mono text-slate-400 text-center">Select ukulele string to tune (G4-C4-E4-A4):</div>
                 <div class="grid grid-cols-4 gap-2">
-                    <button onclick="selectString(0)" id="ukeBtn0" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2.5 transition">
+                    <button onclick="selectString(0)" id="ukeBtn0" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
                         <span class="text-xs font-bold text-indigo-300">G₄</span>
                         <span class="text-[10px] text-slate-400">392 Hz</span>
                     </button>
-                    <button onclick="selectString(1)" id="ukeBtn1" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2.5 transition">
+                    <button onclick="selectString(1)" id="ukeBtn1" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
                         <span class="text-xs font-bold text-indigo-300">C₄</span>
                         <span class="text-[10px] text-slate-400">262 Hz</span>
                     </button>
-                    <button onclick="selectString(2)" id="ukeBtn2" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2.5 transition">
+                    <button onclick="selectString(2)" id="ukeBtn2" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
                         <span class="text-xs font-bold text-indigo-300">E₄</span>
                         <span class="text-[10px] text-slate-400">329 Hz</span>
                     </button>
-                    <button onclick="selectString(3)" id="ukeBtn3" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2.5 transition">
+                    <button onclick="selectString(3)" id="ukeBtn3" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
                         <span class="text-xs font-bold text-indigo-300">A₄</span>
                         <span class="text-[10px] text-slate-400">440 Hz</span>
                     </button>
@@ -107,22 +118,22 @@
             </div>
 
             <!-- Bass Strings Panel -->
-            <div id="bassPanel" class="w-full bg-slate-900/90 rounded-2xl p-3 border border-slate-700/80 hidden flex flex-col space-y-2">
-                <div class="text-xs font-mono text-slate-400 text-center">Select bass string to tune (E1-A1-D2-G2):</div>
+            <div id="bassPanel" class="w-full bg-slate-900/90 rounded-2xl p-2.5 border border-slate-700/80 hidden flex flex-col space-y-1.5">
+                <div class="text-[11px] font-mono text-slate-400 text-center">Select bass string to tune (E1-A1-D2-G2):</div>
                 <div class="grid grid-cols-4 gap-2">
-                    <button onclick="selectString(0)" id="bassBtn0" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2.5 transition">
+                    <button onclick="selectString(0)" id="bassBtn0" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
                         <span class="text-xs font-bold text-indigo-300">E₁</span>
                         <span class="text-[10px] text-slate-400">41 Hz</span>
                     </button>
-                    <button onclick="selectString(1)" id="bassBtn1" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2.5 transition">
+                    <button onclick="selectString(1)" id="bassBtn1" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
                         <span class="text-xs font-bold text-indigo-300">A₁</span>
                         <span class="text-[10px] text-slate-400">55 Hz</span>
                     </button>
-                    <button onclick="selectString(2)" id="bassBtn2" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2.5 transition">
+                    <button onclick="selectString(2)" id="bassBtn2" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
                         <span class="text-xs font-bold text-indigo-300">D₂</span>
                         <span class="text-[10px] text-slate-400">73 Hz</span>
                     </button>
-                    <button onclick="selectString(3)" id="bassBtn3" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2.5 transition">
+                    <button onclick="selectString(3)" id="bassBtn3" class="flex flex-col items-center bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl py-2 transition">
                         <span class="text-xs font-bold text-indigo-300">G₂</span>
                         <span class="text-[10px] text-slate-400">98 Hz</span>
                     </button>
@@ -132,7 +143,7 @@
         </div>
 
         <!-- Buffer Size Setting with Tap-to-Toggle Tooltip -->
-        <div class="w-full flex items-center justify-between bg-slate-900/70 px-3 py-2.5 rounded-xl border border-slate-700/70 text-xs font-mono text-slate-400 relative">
+        <div class="w-full flex items-center justify-between bg-slate-900/70 px-3 py-2 rounded-xl border border-slate-700/70 text-xs font-mono text-slate-400 relative">
             <div class="flex items-center space-x-1.5">
                 <span>Buffer Size (FFT):</span>
                 <!-- Tap-to-Toggle Tooltip Button -->
@@ -153,17 +164,17 @@
         </div>
 
         <!-- Note Display -->
-        <div id="display" class="flex flex-col items-center opacity-40 transition-opacity duration-300">
+        <div id="display" class="flex flex-col items-center opacity-40 transition-opacity duration-300 py-1">
             <div class="flex items-baseline space-x-2">
-                <span id="noteName" class="text-6xl font-black tracking-tight">--</span>
-                <span id="octave" class="text-3xl font-bold text-indigo-400"></span>
+                <span id="noteName" class="text-5xl font-black tracking-tight">--</span>
+                <span id="octave" class="text-2xl font-bold text-indigo-400"></span>
             </div>
-            <div id="frequency" class="text-lg font-mono text-slate-400 mt-1">0.0 Hz</div>
+            <div id="frequency" class="text-sm font-mono text-slate-400">0.0 Hz</div>
         </div>
 
         <!-- Cents Meter -->
-        <div class="w-full flex flex-col items-center space-y-2">
-            <div class="relative w-full h-10 bg-slate-900/80 rounded-xl overflow-hidden flex items-center justify-center border border-slate-700">
+        <div class="w-full flex flex-col items-center space-y-1">
+            <div class="relative w-full h-8 bg-slate-900/80 rounded-xl overflow-hidden flex items-center justify-center border border-slate-700">
                 <!-- Ticks -->
                 <div class="absolute inset-0 flex justify-between px-6 pointer-events-none opacity-40">
                     <div class="w-0.5 h-full bg-slate-500"></div>
@@ -173,9 +184,9 @@
                     <div class="w-0.5 h-full bg-slate-500"></div>
                 </div>
                 <!-- Needle Indicator -->
-                <div id="needle" class="absolute w-1 h-7 bg-cyan-400 rounded-full needle shadow-[0_0_10px_rgba(34,211,238,0.8)]" style="transform: translateX(0px);"></div>
+                <div id="needle" class="absolute w-1 h-6 bg-cyan-400 rounded-full needle shadow-[0_0_10px_rgba(34,211,238,0.8)]" style="transform: translateX(0px);"></div>
             </div>
-            <div class="flex justify-between w-full text-xs font-mono text-slate-400 px-2">
+            <div class="flex justify-between w-full text-[11px] font-mono text-slate-400 px-2">
                 <span>-50c (Flat)</span>
                 <span id="centsText" class="text-indigo-300 font-bold">0 cents</span>
                 <span>+50c (Sharp)</span>
@@ -183,10 +194,10 @@
         </div>
 
         <!-- Spectrogram / Frequency Visualizer Canvas -->
-        <div class="w-full flex flex-col items-center space-y-1">
-            <canvas id="spectrogram" width="600" height="120" class="w-full h-24 bg-slate-900/90 rounded-2xl border border-slate-700/80 shadow-inner"></canvas>
+        <div class="w-full flex flex-col items-center space-y-0.5">
+            <canvas id="spectrogram" width="600" height="90" class="w-full h-16 bg-slate-900/95 rounded-2xl border border-slate-700/80 shadow-inner"></canvas>
             <!-- Frequency Ticks / Labels -->
-            <div class="w-full flex justify-between text-[10px] font-mono text-slate-400 px-1 pt-1">
+            <div class="w-full flex justify-between text-[10px] font-mono text-slate-400 px-1">
                 <span>0 Hz</span>
                 <span>500</span>
                 <span>1 kHz</span>
@@ -198,7 +209,7 @@
         </div>
 
         <!-- Status / Feedback -->
-        <div id="status" class="text-sm font-medium text-slate-400 h-6 flex items-center">
+        <div id="status" class="text-xs font-medium text-slate-400 h-5 flex items-center">
             Click "Start Tuner" to begin
         </div>
 
@@ -425,7 +436,7 @@
                 isRunning = true;
                 smoothedFrequency = 0;
                 document.getElementById('toggleButton').textContent = 'Stop Tuner';
-                document.getElementById('toggleButton').className = 'w-full py-3.5 rounded-2xl font-bold text-lg bg-rose-600 hover:bg-rose-500 active:scale-95 transition shadow-lg shadow-rose-600/30';
+                document.getElementById('toggleButton').className = 'w-full py-3 rounded-2xl font-bold text-lg bg-rose-600 hover:bg-rose-500 active:scale-95 transition shadow-lg shadow-rose-600/30';
                 document.getElementById('status').textContent = tunerMode !== 'chromatic' && selectedStringIndex === null ? 'Select a string above' : 'Listening... Play a note';
                 document.getElementById('display').classList.remove('opacity-40');
 
@@ -448,7 +459,7 @@
             }
 
             document.getElementById('toggleButton').textContent = 'Start Tuner';
-            document.getElementById('toggleButton').className = 'w-full py-3.5 rounded-2xl font-bold text-lg bg-indigo-600 hover:bg-indigo-500 active:scale-95 transition shadow-lg shadow-indigo-600/30';
+            document.getElementById('toggleButton').className = 'w-full py-3 rounded-2xl font-bold text-lg bg-indigo-600 hover:bg-indigo-500 active:scale-95 transition shadow-lg shadow-indigo-600/30';
             document.getElementById('status').textContent = 'Tuner stopped';
             document.getElementById('display').classList.add('opacity-40');
             smoothedFrequency = 0;
@@ -461,7 +472,7 @@
             document.getElementById('octave').textContent = '';
             document.getElementById('frequency').textContent = '0.0 Hz';
             document.getElementById('needle').style.transform = 'translateX(0px)';
-            document.getElementById('needle').className = 'absolute w-1 h-7 bg-cyan-400 rounded-full needle shadow-[0_0_10px_rgba(34,211,238,0.8)]';
+            document.getElementById('needle').className = 'absolute w-1 h-6 bg-cyan-400 rounded-full needle shadow-[0_0_10px_rgba(34,211,238,0.8)]';
             document.getElementById('centsText').textContent = '0 cents';
         }
 
@@ -637,17 +648,17 @@
             needle.style.transform = `translateX(${pixelOffset}px)`;
 
             if (Math.abs(centsVal) < 3) {
-                needle.className = 'absolute w-1 h-7 bg-emerald-400 rounded-full needle shadow-[0_0_15px_rgba(52,211,153,0.9)]';
+                needle.className = 'absolute w-1 h-6 bg-emerald-400 rounded-full needle shadow-[0_0_15px_rgba(52,211,153,0.9)]';
                 document.getElementById('status').textContent = 'Perfect in tune! ✨';
-                document.getElementById('status').className = 'text-sm font-bold text-emerald-400 h-6 flex items-center';
+                document.getElementById('status').className = 'text-xs font-bold text-emerald-400 h-5 flex items-center';
             } else if (centsVal < 0) {
-                needle.className = 'absolute w-1 h-7 bg-cyan-400 rounded-full needle shadow-[0_0_10px_rgba(34,211,238,0.8)]';
-                document.getElementById('status').textContent = 'Flat (Too low) ⬇️';
-                document.getElementById('status').className = 'text-sm font-medium text-cyan-400 h-6 flex items-center';
+                needle.className = 'absolute w-1 h-6 bg-cyan-400 rounded-full needle shadow-[0_0_10px_rgba(34,211,238,0.8)]';
+                document.getElementById('status').textContent = 'Flat (Too low) ️⬇️';
+                document.getElementById('status').className = 'text-xs font-medium text-cyan-400 h-5 flex items-center';
             } else {
-                needle.className = 'absolute w-1 h-7 bg-amber-400 rounded-full needle shadow-[0_0_10px_rgba(251,191,36,0.8)]';
+                needle.className = 'absolute w-1 h-6 bg-amber-400 rounded-full needle shadow-[0_0_10px_rgba(251,191,36,0.8)]';
                 document.getElementById('status').textContent = 'Sharp (Too high) ⬆️';
-                document.getElementById('status').className = 'text-sm font-medium text-amber-400 h-6 flex items-center';
+                document.getElementById('status').className = 'text-xs font-medium text-amber-400 h-5 flex items-center';
             }
         }
     </script>
